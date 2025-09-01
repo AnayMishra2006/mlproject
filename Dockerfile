@@ -1,20 +1,15 @@
-# Use official Python image
 FROM python:3.9-slim
 
-# Set working directory
-WORKDIR /application
+WORKDIR /app
 
-# Copy requirements first (for caching)
-COPY requirements.txt .
+COPY . /app/
 
-# Install dependencies
+# Install system dependencies and awscli
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    awscli \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY . .
-
-# Expose port
-EXPOSE 5000
-
-# Run Flask app
 CMD ["python", "application.py"]
